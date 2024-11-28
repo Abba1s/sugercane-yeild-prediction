@@ -42,15 +42,38 @@ jobs:
       # Set up SSH (if needed for deployment)
       - name: Set up SSH keys
         run: |
+          # Print the SSH_PRIVATE_KEY to the logs (for debugging purposes only)
+          echo "Setting up SSH keys..."
+          echo "$SSH_PRIVATE_KEY"
+
+          # Create the .ssh directory
           mkdir -p ~/.ssh
+
+          # Check if the SSH_PRIVATE_KEY is empty (debugging step)
+          if [ -z "$SSH_PRIVATE_KEY" ]; then
+            echo "Error: SSH_PRIVATE_KEY is empty!"
+            exit 1
+          fi
+
+          # Write the SSH private key to the id_rsa file
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+
+          # Set permissions for the SSH private key file
           chmod 600 ~/.ssh/id_rsa
+
+          # Add Render's server to the known hosts
           ssh-keyscan render.com >> ~/.ssh/known_hosts
 
-      # Deploy to Render (using Render CLI)
+          # Ensure that the SSH key is configured correctly and test the SSH connection
+          ssh -T git@render.com
+
+      # Deploy to Render using Render CLI
       - name: Deploy to Render
         run: |
+          # Install Render CLI
           curl -fsSL https://render.com/install.sh | bash
+
+          # Deploy using Render CLI
           render deploy --service flask-app --branch main
         env:
           RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
