@@ -45,6 +45,7 @@ jobs:
           # Print the SSH_PRIVATE_KEY to the logs (for debugging purposes only)
           echo "Setting up SSH keys..."
           echo "$SSH_PRIVATE_KEY"
+          echo "SSH_PRIVATE_KEY length: ${#SSH_PRIVATE_KEY}"
 
           # Create the .ssh directory
           mkdir -p ~/.ssh
