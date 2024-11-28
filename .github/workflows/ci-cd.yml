@@ -11,7 +11,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     steps:
       # Checkout the repository code
       - name: Checkout code
@@ -21,7 +21,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.9'
+          python-version: "3.9"
 
       # Install dependencies
       - name: Install dependencies
@@ -29,10 +29,13 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      # Install pytest (if it's not in requirements.txt)
+      - name: Install pytest
+        run: pip install pytest
+
       # Run tests (if any)
       - name: Run tests
         run: |
-          # If you have tests, run them here
           pytest
 
   deploy:
@@ -52,7 +55,7 @@ jobs:
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan render.com >> ~/.ssh/known_hosts
-          
+
       # Deploy to Render (using Render CLI)
       - name: Deploy to Render
         run: |
