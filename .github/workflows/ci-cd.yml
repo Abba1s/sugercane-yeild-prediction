@@ -39,21 +39,25 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      # Debug: Check if Railway CLI URL is responding correctly
+      - name: Debug Railway CLI URL
+        run: |
+          echo "Checking if Railway CLI URL is responding correctly"
+          curl -I https://railway.app/cli/install.sh  # Get response headers
+
       # Install Railway CLI
       - name: Install Railway CLI
         run: |
-          curl -sSL https://railway.app/cli/install.sh | bash
+          echo "Attempting to download Railway CLI installation script"
+          curl -sSL https://railway.app/cli/install.sh -o railway_install.sh || exit 1
+          cat railway_install.sh  # Print the first 100 characters of the downloaded content
+          bash railway_install.sh  # Execute the script
           sudo mv railway /usr/local/bin
 
       # Login to Railway
       - name: Login to Railway
         run: |
           echo ${{ secrets.RAILWAY_API_KEY }} | railway login --apiKey
-
-      # Link the GitHub repository to Railway project (optional if already linked)
-      - name: Link Railway Project
-        run: |
-          railway link
 
       # Deploy the Flask app to Railway
       - name: Deploy to Railway
