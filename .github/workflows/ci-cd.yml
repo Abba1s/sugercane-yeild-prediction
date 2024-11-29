@@ -42,7 +42,7 @@ jobs:
       # Install Railway CLI
       - name: Install Railway CLI
         run: |
-          curl -sSL https://railway.app/cli | bash
+          curl -sSL https://railway.app/cli/install.sh | bash
           sudo mv railway /usr/local/bin
 
       # Login to Railway
