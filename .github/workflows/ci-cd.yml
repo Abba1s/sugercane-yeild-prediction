@@ -56,13 +56,13 @@ jobs:
           fi
           echo "Railway CLI installed successfully."
 
-      # Set up Railway authentication token (use RAILWAY_API_KEY for project-level access)
+      # Set up Railway authentication token (use RAILWAY_TOKEN for project-level access)
       - name: Set Railway authentication token
         run: |
           echo "Setting up Railway authentication"
-          echo "RAILWAY_API_KEY HERE : ${{ secrets.RAILWAY_API_KEY }}"
+          echo "RAILWAY_TOKEN HERE : ${{ secrets.RAILWAY_TOKEN }}"
         env:
-          RAILWAY_API_KEY: ${{ secrets.RAILWAY_API_KEY }} # Make sure the secret is named correctly
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }} # Make sure the secret is named correctly
 
       # Deploy the Flask app to Railway
       - name: Deploy to Railway
@@ -75,7 +75,7 @@ jobs:
             exit 1
           fi
         env:
-          RAILWAY_API_KEY: ${{ secrets.RAILWAY_API_KEY }} # Pass the secret as an environment variable
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }} # Pass the secret as an environment variable
 
       # Example: Call Railway GraphQL API to fetch deployment status
       - name: Query Railway GraphQL API
@@ -83,7 +83,7 @@ jobs:
           echo "Querying Railway GraphQL API for deployment status"
           curl --request POST \
             --url https://backboard.railway.com/graphql/v2 \
-            --header "Authorization: Bearer ${{ secrets.RAILWAY_API_KEY }}" \
+            --header "Authorization: Bearer ${{ secrets.RAILWAY_TOKEN }}" \
             --header "Content-Type: application/json" \
             --data '{"query":"query { me { name email } }"}' > api_response.json
 
@@ -91,5 +91,5 @@ jobs:
           cat api_response.json
 
         env:
-          RAILWAY_API_KEY: ${{ secrets.RAILWAY_API_KEY }} # Pass the secret to the API call
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }} # Pass the secret to the API call
 
