@@ -56,15 +56,12 @@ jobs:
           fi
           echo "Railway CLI installed successfully."
 
-      # Login to Railway
       - name: Login to Railway
         run: |
-          echo "Logging in to Railway with API key"
-          railway login --apiKey ${{ secrets.RAILWAY_API_KEY }}
-          if [ $? -ne 0 ]; then
-            echo "Railway login failed"
-            exit 1
-          fi
+          echo "Logging in to Railway"
+          railway login
+        env:
+          RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_KEY }}
 
       # Deploy the Flask app to Railway
       - name: Deploy to Railway
