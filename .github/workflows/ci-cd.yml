@@ -65,7 +65,7 @@ jobs:
       # Deploy the Flask app to Railway
       - name: Check RAILWAY_TOKEN and Deploy
         run: |
-          if [ -z "$RAILWAY_TOKEN" ]; then
+          if [ -z "$RAILWAY_API_KEY" ]; then
             echo "ERROR: RAILWAY_TOKEN is not set!"
             exit 1
           else
