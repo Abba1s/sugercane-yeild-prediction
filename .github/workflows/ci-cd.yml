@@ -60,7 +60,7 @@ jobs:
       - name: Login to Railway
         run: |
           echo "Logging in to Railway with API key"
-          echo ${{ secrets.RAILWAY_API_KEY }} | railway login --apiKey
+          railway login --apiKey ${{ secrets.RAILWAY_API_KEY }}
           if [ $? -ne 0 ]; then
             echo "Railway login failed"
             exit 1
