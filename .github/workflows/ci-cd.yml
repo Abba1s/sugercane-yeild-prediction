@@ -51,12 +51,10 @@ jobs:
           echo "Attempting to download Railway CLI installation script"
           curl -sSL https://railway.app/cli/install.sh -o railway_install.sh || exit 1
           echo "11111"
-          cat railway_install.sh  # Print the first 100 characters of the downloaded content
+          bash railway_install.sh
           echo "22222"
-          bash railway_install.sh  # Execute the script
-          echo "33333"
           sudo mv railway /usr/local/bin
-          echo "44444"
+          echo "33333"
 
       # Login to Railway
       - name: Login to Railway
