@@ -50,6 +50,11 @@ jobs:
         run: |
           echo ${{ secrets.RAILWAY_API_KEY }} | railway login --apiKey
 
+      # Link the GitHub repository to Railway project (optional if already linked)
+      - name: Link Railway Project
+        run: |
+          railway link
+
       # Deploy the Flask app to Railway
       - name: Deploy to Railway
         run: |
