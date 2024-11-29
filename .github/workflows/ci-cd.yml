@@ -56,21 +56,16 @@ jobs:
           fi
           echo "Railway CLI installed successfully."
 
-      # Set up Railway authentication directly (use RAILWAY_TOKEN for project-level access)
+      # Set up Railway authentication token (use RAILWAY_API_KEY for project-level access)
       - name: Set Railway authentication token
         run: |
           echo "Setting up Railway authentication"
-          export RAILWAY_API_KEY=${{ secrets.RAILWAY_API_KEY }}
+        env:
+          RAILWAY_API_KEY: ${{ secrets.RAILWAY_API_KEY }} # Make sure the secret is named correctly
 
       # Deploy the Flask app to Railway
-      - name: Check RAILWAY_API_KEY and Deploy
+      - name: Deploy to Railway
         run: |
-          if [ -n "$RAILWAY_API_KEY" ]; then
-            echo "RAILWAY_API_KEY is set."
-          else
-            echo "ERROR: RAILWAY_API_KEY is not set!"
-            exit 1
-          fi
           echo "Deploying Flask app to Railway"
           railway up --service flask-app > railway_deploy_output.log 2>&1
           if [ $? -ne 0 ]; then
@@ -78,5 +73,22 @@ jobs:
             cat railway_deploy_output.log
             exit 1
           fi
-          env:
-            RAILWAY_API_KEY: ${{ secrets.RAILWAY_API_KEY }}
+        env:
+          RAILWAY_API_KEY: ${{ secrets.RAILWAY_API_KEY }} # Pass the secret as an environment variable
+
+      # Example: Call Railway GraphQL API to fetch deployment status
+      - name: Query Railway GraphQL API
+        run: |
+          echo "Querying Railway GraphQL API for deployment status"
+          curl --request POST \
+            --url https://backboard.railway.com/graphql/v2 \
+            --header "Authorization: Bearer ${{ secrets.RAILWAY_API_KEY }}" \
+            --header "Content-Type: application/json" \
+            --data '{"query":"query { me { name email } }"}' > api_response.json
+
+          # Optional: Print API response to check if it worked
+          cat api_response.json
+
+        env:
+          RAILWAY_API_KEY: ${{ secrets.RAILWAY_API_KEY }} # Pass the secret to the API call
+
