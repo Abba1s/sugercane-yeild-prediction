@@ -60,6 +60,7 @@ jobs:
       - name: Set Railway authentication token
         run: |
           echo "Setting up Railway authentication"
+          echo "RAILWAY_API_KEY HERE : ${{ secrets.RAILWAY_API_KEY }}"
         env:
           RAILWAY_API_KEY: ${{ secrets.RAILWAY_API_KEY }} # Make sure the secret is named correctly
 
