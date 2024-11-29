@@ -44,8 +44,7 @@ jobs:
         run: |
           # Print the SSH_PRIVATE_KEY to the logs (for debugging purposes only)
           echo "Setting up SSH keys..."
-          echo "$SSH_PRIVATE_KEY"
-          echo "SSH_PRIVATE_KEY length: ${{ secrets.SSH_PRIVATE_KEY }}"
+          echo "${{ secrets.SSH_PRIVATE_KEY }}"
 
           # Check if the SSH_PRIVATE_KEY is empty (debugging step)
           if [ -z "${{ secrets.SSH_PRIVATE_KEY }}" ]; then
