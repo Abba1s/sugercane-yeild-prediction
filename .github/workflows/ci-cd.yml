@@ -45,25 +45,31 @@ jobs:
           echo "Checking if Railway CLI URL is responding correctly"
           curl -I https://railway.app/cli/install.sh  # Get response headers
 
-      # Install Railway CLI
+      # Install Railway CLI using the recommended method from Railway docs
       - name: Install Railway CLI
         run: |
-          echo "Attempting to download Railway CLI installation script"
-          curl -sSL https://railway.app/cli/install.sh -o railway_install.sh || exit 1
-          echo "11111"
-          bash railway_install.sh
-          echo "22222"
-          sudo mv railway /usr/local/bin
-          echo "33333"
+          echo "Attempting to download and install Railway CLI"
+          bash <(curl -fsSL cli.new)
+          if [ $? -ne 0 ]; then
+            echo "Error installing Railway CLI"
+            exit 1
+          fi
+          echo "Railway CLI installed successfully."
 
       # Login to Railway
       - name: Login to Railway
         run: |
+          echo "Logging in to Railway with API key"
           echo ${{ secrets.RAILWAY_API_KEY }} | railway login --apiKey
+          if [ $? -ne 0 ]; then
+            echo "Railway login failed"
+            exit 1
+          fi
 
       # Deploy the Flask app to Railway
       - name: Deploy to Railway
         run: |
+          echo "Deploying Flask app to Railway"
           railway up --service flask-app
         env:
           RAILWAY_API_KEY: ${{ secrets.RAILWAY_API_KEY }}
