@@ -39,44 +39,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Set up SSH (if needed for deployment)
-      - name: Set up SSH keys
+      # Install Railway CLI
+      - name: Install Railway CLI
         run: |
-          echo "Setting up SSH keys..."
+          curl -sSL https://railway.app/cli | bash
+          sudo mv railway /usr/local/bin
 
-           # Create the .ssh directory
-           mkdir -p ~/.ssh
-
-           # Write the SSH private key to the id_rsa file
-           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-
-           # Set permissions for the SSH private key file
-           chmod 600 ~/.ssh/id_rsa
-
-           echo "11111..."
-           # Start the SSH agent and add the key
-           eval $(ssh-agent -s)
-           ssh-add ~/.ssh/id_rsa
-
-           # Check if the file was written correctly (without exposing the private key)
-           ls -la ~/.ssh
-           cat ~/.ssh/id_rsa | head -n 10  # Output first 10 lines (just for validation, not printing entire key)
-
-           echo "222222..."
-
-           # Add Render's server to the known hosts
-           ssh-keyscan render.com >> ~/.ssh/known_hosts
-           echo "333333..."
-           # Ensure that the SSH key is configured correctly and test the SSH connection
-           ssh -T git@render.com
-
-      # Deploy to Render using Render CLI
-      - name: Deploy to Render
+      # Login to Railway
+      - name: Login to Railway
         run: |
-          # Install Render CLI
-          curl -fsSL https://render.com/install.sh | bash
+          echo ${{ secrets.RAILWAY_API_KEY }} | railway login --apiKey
 
-          # Deploy using Render CLI
-          render deploy --service flask-app --branch main
+      # Deploy the Flask app to Railway
+      - name: Deploy to Railway
+        run: |
+          railway up --service flask-app
         env:
-          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+          RAILWAY_API_KEY: ${{ secrets.RAILWAY_API_KEY }}
