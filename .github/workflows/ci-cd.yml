@@ -60,10 +60,10 @@ jobs:
       - name: Set Railway authentication token
         run: |
           echo "Setting up Railway authentication"
-          export RAILWAY_TOKEN=${{ secrets.RAILWAY_API_KEY }}
+          export RAILWAY_API_KEY=${{ secrets.RAILWAY_API_KEY }}
 
       # Deploy the Flask app to Railway
-      - name: Check RAILWAY_TOKEN and Deploy
+      - name: Check RAILWAY_API_KEY and Deploy
         run: |
           if [ -z "$RAILWAY_API_KEY" ]; then
             echo "ERROR: RAILWAY_API_KEY is not set!"
@@ -79,4 +79,4 @@ jobs:
             exit 1
           fi
           env:
-            RAILWAY_TOKEN: ${{ secrets.RAILWAY_API_KEY }}
+            RAILWAY_API_KEY: ${{ secrets.RAILWAY_API_KEY }}
