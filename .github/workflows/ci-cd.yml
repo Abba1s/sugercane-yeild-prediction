@@ -63,9 +63,20 @@ jobs:
           export RAILWAY_TOKEN=${{ secrets.RAILWAY_API_KEY }}
 
       # Deploy the Flask app to Railway
-      - name: Deploy to Railway
+      - name: Check RAILWAY_TOKEN and Deploy
         run: |
+          if [ -z "$RAILWAY_TOKEN" ]; then
+            echo "ERROR: RAILWAY_TOKEN is not set!"
+            exit 1
+          else
+            echo "RAILWAY_TOKEN is set correctly."
+          fi
           echo "Deploying Flask app to Railway"
-          railway up --service flask-app
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_API_KEY }} # Use project token here instead of API token
+          railway up --service flask-app > railway_deploy_output.log 2>&1
+          if [ $? -ne 0 ]; then
+            echo "ERROR: Deployment failed. See the logs below:"
+            cat railway_deploy_output.log
+            exit 1
+          fi
+          env:
+            RAILWAY_TOKEN: ${{ secrets.RAILWAY_API_KEY }}
