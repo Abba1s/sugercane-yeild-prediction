@@ -57,6 +57,10 @@ jobs:
           fi
           echo "Railway CLI installed successfully."
 
+      - name: Verify Railway CLI installation
+        run: |
+          railway --version
+
       # Set up Railway authentication token (use RAILWAY_TOKEN for project-level access)
       - name: Set Railway authentication token
         run: |
