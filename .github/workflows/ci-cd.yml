@@ -42,35 +42,33 @@ jobs:
       # Set up SSH (if needed for deployment)
       - name: Set up SSH keys
         run: |
-          # Print the SSH_PRIVATE_KEY to the logs (for debugging purposes only)
           echo "Setting up SSH keys..."
-          echo "${{ secrets.SSH_PRIVATE_KEY }}"
 
-          # Check if the SSH_PRIVATE_KEY is empty (debugging step)
-          if [ -z "${{ secrets.SSH_PRIVATE_KEY }}" ]; then
-            echo "Error: SSH_PRIVATE_KEY is empty!"
-            exit 1
-          fi
+           # Create the .ssh directory
+           mkdir -p ~/.ssh
 
+           # Write the SSH private key to the id_rsa file
+           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
 
-          # Create the .ssh directory
-          mkdir -p ~/.ssh
+           # Set permissions for the SSH private key file
+           chmod 600 ~/.ssh/id_rsa
 
-          # Write the SSH private key to the id_rsa file
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+           echo "11111..."
+           # Start the SSH agent and add the key
+           eval $(ssh-agent -s)
+           ssh-add ~/.ssh/id_rsa
 
-          # Check if the file was written correctly (without exposing the private key)
-          ls -la ~/.ssh
-          cat ~/.ssh/id_rsa | head -n 10  # Output first 10 lines (just for validation, not printing entire key)
+           # Check if the file was written correctly (without exposing the private key)
+           ls -la ~/.ssh
+           cat ~/.ssh/id_rsa | head -n 10  # Output first 10 lines (just for validation, not printing entire key)
 
-          # Set permissions for the SSH private key file
-          chmod 600 ~/.ssh/id_rsa
+           echo "222222..."
 
-          # Add Render's server to the known hosts
-          ssh-keyscan render.com >> ~/.ssh/known_hosts
-
-          # Ensure that the SSH key is configured correctly and test the SSH connection
-          ssh -T git@render.com
+           # Add Render's server to the known hosts
+           ssh-keyscan render.com >> ~/.ssh/known_hosts
+           echo "333333..."
+           # Ensure that the SSH key is configured correctly and test the SSH connection
+           ssh -T git@render.com
 
       # Deploy to Render using Render CLI
       - name: Deploy to Render
