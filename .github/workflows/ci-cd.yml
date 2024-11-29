@@ -73,7 +73,7 @@ jobs:
       - name: Deploy to Railway
         run: |
           echo "Deploying Flask app to Railway"
-          railway up > railway_deploy_output.log 2>&1
+          railway up --service flask-app > railway_deploy_output.log 2>&1
           if [ $? -ne 0 ]; then
             echo "ERROR: Deployment failed. See the logs below:"
             cat railway_deploy_output.log
