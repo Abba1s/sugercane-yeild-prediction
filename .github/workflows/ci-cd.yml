@@ -65,11 +65,11 @@ jobs:
       # Deploy the Flask app to Railway
       - name: Check RAILWAY_API_KEY and Deploy
         run: |
-          if [ -z "$RAILWAY_API_KEY" ]; then
+          if [ -n "$RAILWAY_API_KEY" ]; then
+            echo "RAILWAY_API_KEY is set."
+          else
             echo "ERROR: RAILWAY_API_KEY is not set!"
             exit 1
-          else
-            echo "RAILWAY_API_KEY is set correctly."
           fi
           echo "Deploying Flask app to Railway"
           railway up --service flask-app > railway_deploy_output.log 2>&1
