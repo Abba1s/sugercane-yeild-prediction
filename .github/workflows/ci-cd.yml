@@ -56,10 +56,16 @@ jobs:
           fi
           echo "Railway CLI installed successfully."
 
+      # Set Railway API key for non-interactive authentication
+      - name: Set Railway API Key
+        run: |
+          echo "Setting Railway API key for non-interactive authentication"
+          railway config set RAILWAY_API_KEY ${{ secrets.RAILWAY_API_KEY }}
+
       # Deploy the Flask app to Railway
       - name: Deploy to Railway
         run: |
           echo "Deploying Flask app to Railway"
           railway up --service flask-app
         env:
-          RAILWAY_API_KEY: ${{ secrets.RAILWAY_API_KEY }}
+          RAILWAY_API_KEY: ${{ secrets.RAILWAY_API_KEY }} # Provide API Key as an environment variable
